@@ -123,6 +123,7 @@ else:
     peft_config = None
 
 peft_config = LoraConfig.from_pretrained('vilm/vietcuna-3b-qlora')
+peft_config.inference_mode = False
 
 # Step 5: Define the Trainer
 trainer = SFTTrainer(
