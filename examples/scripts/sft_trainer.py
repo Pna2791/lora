@@ -122,6 +122,8 @@ if script_args.use_peft:
 else:
     peft_config = None
 
+peft_config = LoraConfig.from_pretrained('vilm/vietcuna-3b-qlora')
+
 # Step 5: Define the Trainer
 trainer = SFTTrainer(
     model=model,
