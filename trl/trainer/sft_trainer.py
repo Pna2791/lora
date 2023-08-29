@@ -120,6 +120,19 @@ class SFTTrainer(Trainer):
         dataset_num_proc: Optional[int] = None,
         dataset_batch_size: int = 1000,
     ):
+        def print_trainable_parameters(model):
+            """
+            Prints the number of trainable parameters in the model.
+            """
+            trainable_params = 0
+            all_param = 0
+            for _, param in model.named_parameters():
+                all_param += param.numel()
+                if param.requires_grad:
+                    trainable_params += param.numel()
+            print(
+                f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
+            )
         if isinstance(model, str):
             warnings.warn(
                 "You passed a model_id to the SFTTrainer. This will automatically create an "
@@ -147,7 +160,8 @@ class SFTTrainer(Trainer):
                 if getattr(model, "is_loaded_in_8bit", False) or getattr(model, "is_loaded_in_4bit", False):
                     model = prepare_model_for_int8_training(model)
 
-                model = get_peft_model(model, peft_config)
+                # model = get_peft_model(model, peft_config)
+                model = PeftModel.from_pretrained(model, 'vilm/vietcuna-3b-qlora')
 
             if callbacks is None:
                 callbacks = [PeftSavingCallback]
@@ -166,6 +180,13 @@ class SFTTrainer(Trainer):
             warnings.warn(
                 f"You didn't pass a `max_seq_length` argument to the SFTTrainer, this will default to {max_seq_length}"
             )
+            
+        for name, param in model.named_parameters():
+            if 'lora' in name or 'Lora' in name:
+                param.requires_grad = True
+        model.print_trainable_parameters()
+        print("[AFTER TRAINER]", model)
+        print_trainable_parameters(model)
 
         self.dataset_num_proc = dataset_num_proc
         self.dataset_batch_size = dataset_batch_size
