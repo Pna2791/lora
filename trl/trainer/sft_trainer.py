@@ -185,7 +185,7 @@ class SFTTrainer(Trainer):
             if 'lora' in name or 'Lora' in name:
                 param.requires_grad = True
         model.print_trainable_parameters()
-        print("[AFTER TRAINER]", model)
+        # print("[AFTER TRAINER]", model)
         print_trainable_parameters(model)
 
         self.dataset_num_proc = dataset_num_proc
