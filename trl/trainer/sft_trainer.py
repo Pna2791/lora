@@ -161,7 +161,7 @@ class SFTTrainer(Trainer):
                     model = prepare_model_for_int8_training(model)
 
                 # model = get_peft_model(model, peft_config)
-                model = PeftModel.from_pretrained(model, 'vilm/vietcuna-3b-qlora')
+                model = PeftModel.from_pretrained(model, 'CreatorPhan/Bloomz_lora_answer')
 
             if callbacks is None:
                 callbacks = [PeftSavingCallback]
